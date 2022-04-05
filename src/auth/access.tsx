@@ -6,39 +6,33 @@ import {
 } from "../constants/jsonforms.constants";
 import { LOGIN_SCHEMA, LOGIN_UI_SCHEMA } from "../constants/authConstants";
 import { useEffect, useState } from "react";
-import { AuthStorageValues } from "../models/auth.models";
+import { LoginCredentials } from "../models/auth.models";
 import { useString } from "../hooks/useInput";
 import { observer } from "mobx-react-lite";
-import { AuthStore } from "./auth.store";
+import { useAuthStore } from "./auth.context";
 
-const AccessComponent = observer(({ authStore }: { authStore: AuthStore }) => {
+const AccessComponent = observer(() => {
   // const { state: authState, dispatch: dispatchOnAuth } = useAuthContext();
-  const {};
   const [saveBtnProps, setSaveBtnProps] = useState<
     Record<string, number | string | boolean>
   >({});
-  const { setValue: setKey, value: accessKey } = useString("");
-  const { setValue: setSignature, value: signature } = useString("");
-  const [data] = useState<AuthStorageValues>({
-    key: accessKey,
-    signature: signature,
+  const authStore = useAuthStore();
+  const { setValue: setUsername, value: username } = useString("");
+  const { setValue: setPassword, value: password } = useString("");
+  const [data] = useState<LoginCredentials>({
+    username: "",
+    password: "",
   });
 
   const handleClick = () => {
-    dispatchOnAuth({
-      type: "setAWSCreds",
-      value: {
-        key: accessKey,
-        signature,
-      },
-    });
+    authStore.setToken("mockTokenFromAPICallPromise");
   };
 
   useEffect(() => {
     const validate = globalajv.compile(LOGIN_SCHEMA);
     const valid = validate({
-      key: accessKey,
-      signature: signature,
+      username: username,
+      password: password,
     });
     setSaveBtnProps({
       className: !valid
@@ -46,24 +40,10 @@ const AccessComponent = observer(({ authStore }: { authStore: AuthStore }) => {
         : "uk-button uk-button-primary",
       disabled: !valid,
     });
-  }, [accessKey, signature]);
+  }, [username, password]);
 
   return (
     <>
-      <h2>Getting Started</h2>
-      {(!authState.key || !authState.signature) && (
-        <p>
-          To get started, you will need access to the Wizard, please provide the
-          Access Key and a Signature you were provided. After which you will see
-          the wizard tab appear and can begin.
-        </p>
-      )}
-      {authState.key && authState.signature && (
-        <p>
-          You have an Access Key and Signature saved to your browser, however
-          you can update it at anytime below.
-        </p>
-      )}
       <div className="uk-margin">
         <JsonForms
           schema={LOGIN_SCHEMA}
@@ -72,16 +52,14 @@ const AccessComponent = observer(({ authStore }: { authStore: AuthStore }) => {
           renderers={globalRenderer}
           cells={globalCells}
           onChange={({ errors, data }) => {
-            setKey(data.key);
-            setSignature(data.signature);
+            setUsername(data.username);
+            setPassword(data.password);
           }}
           ajv={globalajv}
         ></JsonForms>
       </div>
       <button type="button" onClick={handleClick} {...saveBtnProps}>
-        {authState.key && authState.signature
-          ? "Update Credentials"
-          : "Save Credentials"}
+        {authStore.token ? "Update Credentials" : "Save Credentials"}
       </button>
     </>
   );

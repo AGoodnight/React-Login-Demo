@@ -1,4 +1,5 @@
 import { Route } from "react-router";
-export const routes = [<Route></Route>];
+import AccessComponent from "./auth/access";
+export const routes = [<Route path="/" component={AccessComponent}></Route>];
 
 export default routes;

@@ -7,9 +7,7 @@ const Layout: React.FC = ({ children }) => {
   console.log(authStorage());
   return (
     <Container>
-      <Grid container>
-        <Grid item>Hello</Grid>
-      </Grid>
+      <Grid container>{children}</Grid>
     </Container>
   );
 };

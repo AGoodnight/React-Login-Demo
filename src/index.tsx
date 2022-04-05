@@ -3,22 +3,28 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import Layout from "./layout/layout";
-import { Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import { Switch } from "react-router";
 import routes from "./routes";
+import { AuthStoreProvider } from "./auth/auth.context";
 
 ReactDOM.render(
   <React.StrictMode>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-    <Layout>
-      <Routes>{routes}</Routes>
-    </Layout>
+    <AuthStoreProvider>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      />
+      <Layout>
+        <BrowserRouter>
+          <Switch>{routes}</Switch>
+        </BrowserRouter>
+      </Layout>
+    </AuthStoreProvider>
   </React.StrictMode>,
 
   document.getElementById("root")

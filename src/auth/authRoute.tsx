@@ -1,13 +1,13 @@
+import { observer } from "mobx-react-lite";
 import { Route, RouteProps } from "react-router-dom";
-import { useAuthContext } from "./auth.context";
+import { AuthStore } from "./auth.store";
 
 export type RouteResolver = () => { resolve: () => Promise<any> };
 
 export type AuthRoutedProps = RouteProps & {};
 
-const AuthRoute = ({ children, ...props }: AuthRoutedProps) => {
-  const { state: authState } = useAuthContext();
-  if (authState.key && authState.signature) {
+const AuthRoute = observer((authState: AuthStore, { children, ...props }) => {
+  if (authState.token) {
     return children ? (
       <Route {...props}>{children}</Route>
     ) : (
@@ -19,6 +19,6 @@ const AuthRoute = ({ children, ...props }: AuthRoutedProps) => {
     }
     return <Route {...props}> Unauthorized </Route>;
   }
-};
+});
 
 export default AuthRoute;
