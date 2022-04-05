@@ -3,7 +3,6 @@ import useStorage from "../hooks/useStorage";
 
 const Layout: React.FC = ({ children }) => {
   const { authStorage } = useStorage();
-
   console.log(authStorage());
   return (
     <Container>

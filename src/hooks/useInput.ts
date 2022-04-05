@@ -47,3 +47,20 @@ export const useString = (initialValue: string) => {
     },
   };
 };
+
+export const usePhoneNumber = (initialValue: string) => {
+  const [value, setValue] = useState(initialValue);
+
+  return {
+    value,
+    setValue,
+    reset: () => setValue(""),
+    bind: {
+      value,
+      onChange: (event: any) => {
+        // transform value to phone format "000-000-0000 ext 0000"
+        setValue(event.target.value);
+      },
+    },
+  };
+};
